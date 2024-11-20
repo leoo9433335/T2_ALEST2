@@ -53,6 +53,8 @@ public class Develop {
             StringBuilder coordenadaBinaria = new StringBuilder();
             String[][] matrizLabirinto = new String[linhas][colunas];
 
+            int totalAnao = 0, totalBruxa = 0, totalCavaleiro = 0, totalDuende = 0, totalElfo = 0, totalFeijao = 0;
+
             for (int row = 0; row < linhas; row++) {
                 linha = br.readLine();
                 String[] hexValues = linha.split(" ");
@@ -61,50 +63,75 @@ public class Develop {
                 for (int col = 0; col < hexValues.length; col++) {
                     // 4. Converta hexadecimal para binário (4 bits)
                     String hex = hexValues[col];
-                    boolean temLetraMaiuscula = false;
+                    int contAnao = 0;
+                    int contBruxa = 0;
+                    int contCavaleiro = 0;
+                    int contDuende = 0;
+                    int contElfo = 0;
+                    int contFeijao = 0;
                     for (Character c : hex.toCharArray()) {
                         if (Character.isUpperCase(c)) {
-                            temLetraMaiuscula = true;
+
                             switch (c) {
                                 case 'A':
-                                    coordenadaBinaria.append("Anão ");
+                                    contAnao++;
                                     break;
                                 case 'B':
-                                    coordenadaBinaria.append("Bruxa ");
+                                    contBruxa++;
                                     break;
                                 case 'C':
-                                    coordenadaBinaria.append("Cavaleiro ");
+                                    contCavaleiro++;
                                     break;
                                 case 'D':
-                                    coordenadaBinaria.append("Duende ");
+                                    contDuende++;
                                     break;
                                 case 'E':
-                                    coordenadaBinaria.append("Elfo ");
+                                    contElfo++;
                                     break;
                                 case 'F':
-                                    coordenadaBinaria.append("Feijão");
+                                    contFeijao++;
                                     break;
-                                default:
-                                coordenadaBinaria.append(c);
                             }
-                            break;
                         }
                     }
-                    if (!temLetraMaiuscula) {
-                        try{
-                        int decimal = Integer.parseInt(hex, 16);
-                        String binary = String.format("%4s", Integer.toBinaryString(decimal)).replace(' ', '0');
-                        matrizLabirinto[row][col] = coordenadaBinaria.append(binary).toString();
-                        } catch (NumberFormatException e) {
-                            matrizLabirinto[row][col] = "erro"; 
-                    } 
-                }else {
-                        matrizLabirinto[row][col] =coordenadaBinaria.toString().trim();
-                    }
+                    totalAnao += contAnao;
+                    totalBruxa += contBruxa;
+                    totalCavaleiro += contCavaleiro;
+                    totalDuende += contDuende;
+                    totalElfo += contElfo;
+                    totalFeijao += contFeijao;
+
+                    int decimal = Integer.parseInt(hex, 16);
+                    String binary = String.format("%4s", Integer.toBinaryString(decimal)).replace(' ', '0');
+                    matrizLabirinto[row][col] = coordenadaBinaria.append(binary).toString();
                     coordenadaBinaria.setLength(0);
+
                 }
             }
-            br.close();
+            String serMaisFrequente;
+            int maiorContagem = Math.max(
+                    Math.max(
+                            Math.max(totalAnao, totalBruxa),
+                            Math.max(totalCavaleiro, totalDuende)),
+                    Math.max(totalElfo, totalFeijao));
+
+            if (maiorContagem == totalAnao) {
+                serMaisFrequente = "Anão";
+            } else if (maiorContagem == totalBruxa) {
+                serMaisFrequente = "Bruxa";
+            } else if (maiorContagem == totalCavaleiro) {
+                serMaisFrequente = "Cavaleiro";
+            } else if (maiorContagem == totalDuende) {
+                serMaisFrequente = "Duende";
+            } else if (maiorContagem == totalElfo) {
+                serMaisFrequente = "Elfo";
+            } else {
+                serMaisFrequente = "Feijão";
+            }
+
+            System.out.println("ser mais frequente: " + serMaisFrequente);
+
+            // *iMPRIMI MATRIZ COM COORDENADAS */
             System.out.println("Matriz do labirinto: ");
             for (int r = 0; r < linhas; r++) {
                 for (int c = 0; c < colunas; c++) {

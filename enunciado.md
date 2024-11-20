@@ -18,13 +18,8 @@ O problema dos cretenses é que eles tinham _m_, _n_ e a descrição das _m_ × 
 
 7 3 A e
 
+
 6 6
-
-
-
-
-
-
 9 E b A a E
 
 3 a E b 8 8
