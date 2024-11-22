@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Develop {
     private static Map<Integer, String> arqtxt;
@@ -19,6 +21,7 @@ public class Develop {
         arqtxt.put(6, "src/casos2/caso180_2.txt");
         arqtxt.put(7, "src/casos2/caso200_2.txt");
         arqtxt.put(8, "src/casos2/caso250_2.txt");
+        arqtxt.put(9, "src/casos2/teste.txt");
     }
 
     public static void main(String[] args) {
@@ -108,7 +111,43 @@ public class Develop {
 
                 }
             }
-            String serMaisFrequente;
+                   
+
+            UninfindLabirinto UF= new UninfindLabirinto(linhas*colunas);
+            for (int i = 0; i < linhas; i++) {
+            for (int j = 0; j < colunas; j++) {
+                String cell = matrizLabirinto[i][j];
+                int currentId = i * colunas + j;
+                int cellValue = Integer.parseInt(cell, 2); // Convert binary string to int
+
+                // Verificar passagens e conectar:
+                if ((cellValue & 1) == 0 && i > 0) { // Superior
+                    int neighborId = (i - 1) * colunas + j;
+                    UF.union(currentId, neighborId);
+                }
+                if ((cellValue & 2) == 0 && j < colunas - 1) { // Direita
+                    int neighborId = i * colunas + (j + 1);
+                    UF.union(currentId, neighborId);
+                }
+                if ((cellValue & 4) == 0 && i < linhas - 1) { // Inferior
+                    int neighborId = (i + 1) * colunas + j;
+                    UF.union(currentId, neighborId);
+                }
+                if ((cellValue & 8) == 0 && j > 0) { // Esquerda
+                    int neighborId = i * colunas + (j - 1);
+                    UF.union(currentId, neighborId);
+                }
+            }
+        }
+
+        // Contar regiões isoladas (raízes únicas no Union-Find):
+        Set<Integer> regions = new HashSet<>();
+        for (int i = 0; i < linhas * colunas; i++) {
+            regions.add(UF.find(i));
+        }
+        System.out.println("Regiões isoladas: " + regions.size());
+        ;
+            String serMaisFrequente="";
             int maiorContagem = Math.max(
                     Math.max(
                             Math.max(totalAnao, totalBruxa),
@@ -116,28 +155,40 @@ public class Develop {
                     Math.max(totalElfo, totalFeijao));
 
             if (maiorContagem == totalAnao) {
-                serMaisFrequente = "Anão";
+                   if(!serMaisFrequente.isEmpty()){
+                       serMaisFrequente += "e";
+                   }
+                serMaisFrequente += "Anão";
             } else if (maiorContagem == totalBruxa) {
-                serMaisFrequente = "Bruxa";
+                if (!serMaisFrequente.isEmpty()) {
+                    serMaisFrequente += "e";   
+                }
+                serMaisFrequente += "Bruxa";
             } else if (maiorContagem == totalCavaleiro) {
-                serMaisFrequente = "Cavaleiro";
+                if(!serMaisFrequente.isEmpty()){
+                    serMaisFrequente += "e";
+                }
+                serMaisFrequente += "Cavaleiro";
             } else if (maiorContagem == totalDuende) {
-                serMaisFrequente = "Duende";
+                if (!serMaisFrequente.isEmpty()) {
+                    serMaisFrequente += "e";     
+                }
+                serMaisFrequente += "Duende";
             } else if (maiorContagem == totalElfo) {
-                serMaisFrequente = "Elfo";
-            } else {
+                if (!serMaisFrequente.isEmpty()) {
+                    serMaisFrequente += "e";        
+                }
+                serMaisFrequente += "Elfo";
+            } if (maiorContagem == totalFeijao) {
+                if (!serMaisFrequente.isEmpty()) {
+                    serMaisFrequente += "e";        
+                }
                 serMaisFrequente = "Feijão";
             }
 
             System.out.println("ser mais frequente: " + serMaisFrequente);
 
-            // *iMPRIMI MATRIZ COM COORDENADAS */
-            System.out.println("Matriz do labirinto: ");
-            for (int r = 0; r < linhas; r++) {
-                for (int c = 0; c < colunas; c++) {
-                    System.out.print(matrizLabirinto[r][c] + " ");
-                }
-            }
+            
         } catch (Exception e) {
             System.out.println("Erro: " + e.getMessage());
         }
